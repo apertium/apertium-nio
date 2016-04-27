@@ -1,11 +1,11 @@
-###############################################################################
 ## Makefile for apertium-nio
-###############################################################################
 
-RELEASE=0.1
-VERSION=0.1.0
+RELEASE=0.0
+VERSION=0.0.0
 LANG1=nio
 BASENAME=apertium-$(LANG1)
+
+LEXCFLAGS=-v --Werror
 
 TARGETS_COMMON =			\
 	$(LANG1).automorf.hfst		\
@@ -20,12 +20,10 @@ TARGETS_COMMON =			\
 # This include defines goals for install-modes, .deps/.d, autobil.prefixes and .mode files:
 @ap_include@
 
-###############################################################################
 ## nio transducer
-###############################################################################
 
 .deps/$(LANG1).twol.hfst: $(BASENAME).$(LANG1).twol .deps/.d
-	hfst-twolc $< -o $@
+	$(HFSTTWOLC) $< -o $@
 
 .deps/$(LANG1).RL.lexc: $(BASENAME).$(LANG1).lexc .deps/.d
 	cat $< | grep -v 'Dir/LR' > $@
@@ -34,94 +32,86 @@ TARGETS_COMMON =			\
 	cat $< | grep -v 'Dir/RL' > $@
 
 .deps/$(LANG1).RL.lexc.hfst: .deps/$(LANG1).RL.lexc
-	hfst-lexc $< -o $@ -v
+	$(HFSTLEXC) $< -o $@ $(LEXCFLAGS)
 
 .deps/$(LANG1).LR.lexc.hfst: .deps/$(LANG1).LR.lexc
-	hfst-lexc $< -o $@ -v
+	$(HFSTLEXC) $< -o $@ $(LEXCFLAGS)
 
 .deps/$(LANG1).RL.hfst: .deps/$(LANG1).RL.lexc.hfst .deps/$(LANG1).twol.hfst
-	hfst-compose-intersect -1 .deps/$(LANG1).RL.lexc.hfst -2 .deps/$(LANG1).twol.hfst -o $@
+	$(HFSTCOMPINT) -1 .deps/$(LANG1).RL.lexc.hfst -2 .deps/$(LANG1).twol.hfst -o $@
 
 .deps/$(LANG1).LR.hfst: .deps/$(LANG1).LR.lexc.hfst .deps/$(LANG1).twol.hfst
-	hfst-compose-intersect -1 .deps/$(LANG1).LR.lexc.hfst -2 .deps/$(LANG1).twol.hfst -o $@
+	$(HFSTCOMPINT) -1 .deps/$(LANG1).LR.lexc.hfst -2 .deps/$(LANG1).twol.hfst -o $@
 
 $(LANG1).autogen.hfst: .deps/$(LANG1).RL.hfst
-	hfst-fst2fst -O $< -o $@
+	$(HFSTF2F) -O $< -o $@
 
 $(LANG1).automorf.hfst: .deps/$(LANG1).LR.hfst
-	hfst-invert $< | hfst-fst2fst -O -o $@
+	$(HFSTINV) $< | $(HFSTF2F) -O -o $@
 
 $(LANG1).autogen.att.gz: $(LANG1).autogen.hfst
-	hfst-fst2txt $< | gzip -9 -c -n > $@
+	$(HFSTF2T) $< | gzip -9 -c -n > $@
 
 $(LANG1).automorf.att.gz: $(LANG1).automorf.hfst
-	hfst-fst2txt $< | gzip -9 -c -n > $@
+	$(HFSTF2T) $< | gzip -9 -c -n > $@
 
 $(LANG1).autogen.bin: $(LANG1).autogen.att.gz .deps/.d
 	zcat < $< > .deps/$(LANG1).autogen.att
-	lt-comp lr .deps/$(LANG1).autogen.att $@
+	$(LTCOMP) lr .deps/$(LANG1).autogen.att $@
 
 $(LANG1).automorf.bin: $(LANG1).automorf.att.gz .deps/.d
 	zcat < $< > .deps/$(LANG1).automorf.att
-	lt-comp lr .deps/$(LANG1).automorf.att $@
+	$(LTCOMP) lr .deps/$(LANG1).automorf.att $@
 
 $(LANG1).autopgen.bin: $(BASENAME).post-$(LANG1).dix
-	lt-comp lr $< $@
+	$(LTCOMP) lr $< $@
 
-###############################################################################
 ## Debugging transducers (for testvoc)
-###############################################################################
 
 debug: .deps/$(LANG1).LR-debug.hfst .deps/$(LANG1).lexc.hfst
 
 .deps/$(LANG1).LR-debug.hfst: $(BASENAME).$(LANG1).lexc .deps/.d
 	cat $< | grep -v 'Dir/RL' | grep -v 'Use/Circ' > .deps/$(LANG1).LR-debug.lexc
-	hfst-lexc .deps/$(LANG1).LR-debug.lexc -o .deps/$(LANG1).LR-debug.lexc.hfst -v
-	hfst-compose-intersect -1 .deps/$(LANG1).LR-debug.lexc.hfst -2 .deps/$(LANG1).twol.hfst -o $@
+	$(HFSTLEXC) .deps/$(LANG1).LR-debug.lexc -o .deps/$(LANG1).LR-debug.lexc.hfst -v
+	$(HFSTCOMPINT) -1 .deps/$(LANG1).LR-debug.lexc.hfst -2 .deps/$(LANG1).twol.hfst -o $@
 
 .deps/$(LANG1).lexc.hfst: .deps/$(LANG1).RL.lexc.hfst
-	hfst-fst2fst -O -i $< -o $@
+	$(HFSTF2F) -O -i $< -o $@
 
-###############################################################################
 ## Disambiguation rules
-###############################################################################
 
 $(LANG1).rlx.bin: $(BASENAME).$(LANG1).rlx $(CGCOMP)
 	$(CGCOMP) $< $@
 
-###############################################################################
 ## Spell checker
-###############################################################################
 
 $(LANG1).zhfst: .deps/acceptor.default.hfst .deps/errmodel.default.hfst
 	rm -f $@
 	zip -j $@ .deps/acceptor.default.hfst .deps/errmodel.default.hfst speller/index.xml
 
 .deps/errmodel.default.hfst: .deps/words.default.hfst .deps/strings.default.hfst
-	python dev/editdist.py -v -s -d 1 -e '@0@' -i speller/editdist.default.txt -a .deps/acceptor.default.hfst \
-	| hfst-txt2fst  -e '@0@' -o .deps/editdist.default.hfst
-	hfst-disjunct .deps/strings.default.hfst .deps/editdist.default.hfst \
-	| hfst-minimise | hfst-repeat -f 1 -t 2 -o .deps/editstrings.default.hfst
-	hfst-disjunct .deps/words.default.hfst .deps/editstrings.default.hfst \
-	| hfst-fst2fst  -f olw -o $@
+	$(PYTHON) dev/editdist.py -v -s -d 1 -e '@0@' -i speller/editdist.default.txt -a .deps/acceptor.default.hfst \
+	| $(HFSTT2F)  -e '@0@' -o .deps/editdist.default.hfst
+	$(HFSTDIS) .deps/strings.default.hfst .deps/editdist.default.hfst \
+	| $(HFSTMIN) | $(HFSTREP) -f 1 -t 2 -o .deps/editstrings.default.hfst
+	$(HFSTDIS) .deps/words.default.hfst .deps/editstrings.default.hfst \
+	| $(HFSTF2F)  -f olw -o $@
 
 .deps/words.default.hfst: speller/words.default.txt
-	grep -v -e "^#" -e "^$$" $< | hfst-strings2fst  -j -o $@
+	grep -v -e "^#" -e "^$$" $< | $(HFSTS2F)  -j -o $@
 
 .deps/strings.default.hfst: speller/strings.default.txt .deps/anystar.hfst
-	grep -v -e "^#" -e "^$$" $< | hfst-strings2fst  -j | hfst-concatenate .deps/anystar.hfst - |\
-	hfst-concatenate - .deps/anystar.hfst -o $@
+	grep -v -e "^#" -e "^$$" $< | $(HFSTS2F)  -j | $(HFSTCAT) .deps/anystar.hfst - |\
+	$(HFSTCAT) - .deps/anystar.hfst -o $@
 
 .deps/anystar.hfst:
-	echo "?*;" | hfst-regexp2fst -S -o $@
+	echo "?*;" | $(HFSTR2F) -S -o $@
 
 .deps/acceptor.default.hfst: $(LANG1).autogen.hfst
-	cat $< | hfst-fst2fst -t | hfst-project  --project=lower | hfst-minimise |hfst-fst2fst  -f olw -o $@
+	cat $< | $(HFSTF2F) -t | $(HFSTPROJ)  --project=lower | $(HFSTMIN) |$(HFSTF2F)  -f olw -o $@
 
 
-###############################################################################
 ## Distribution
-###############################################################################
 
 EXTRA_DIST=$(BASENAME).$(LANG1).lexc		\
 		$(BASENAME).$(LANG1).twol	\
@@ -130,9 +120,7 @@ EXTRA_DIST=$(BASENAME).$(LANG1).lexc		\
 		$(LANG1).prob			\
 		modes.xml
 
-###############################################################################
 ## Installation stuff
-###############################################################################
 #
 #   apertium_nio_dir: This is where the compiled binaries go
 #   apertium_nio_srcdir: This is where the source files go
@@ -160,17 +148,13 @@ install-data-local:
 	$(INSTALL_DATA) $(BASENAME).$(LANG1).rlx $(DESTDIR)$(apertium_nio_srcdir)
 	$(INSTALL_DATA) $(BASENAME).post-$(LANG1).dix $(DESTDIR)$(apertium_nio_srcdir)
 
-###############################################################################
 ## Cleanup
-###############################################################################
 
 CLEANFILES = $(TARGETS_COMMON)
 clean-local:
 	-rm -rf .deps modes
 
-###############################################################################
 ## Test
-###############################################################################
 
 test: all
 	echo "TODO test sentence" | apertium -d . nio-morph | tee .test-mt
