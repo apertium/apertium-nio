@@ -7,33 +7,42 @@ Multichar_Symbols
 %<pl%> ! Plural
 %<sg%> ! Singular
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!                       M O R P H O T A C T I C S                         !!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Nganasan in latin script :-/
+
++N +V +A
++Loc +Lat +Acc +Gen 
++Pl +Sg +Du
+^n ^ODD
 
 LEXICON Root
+0 Nouns ;
 
-NounRoot ;
+LEXICON Nouns
+kotu+N:koðu^ODD Cases ;
+maɂ+N:maɁ Cases ;
+ńemɨ+N:ńemɨ^ODD Cases ;
+ŋanduj+N:ŋandujCases ;
+baarbə+N:baarbə Cases ;
+čimi+N:čimi^ODD Cases ;
+ŋoj+N:ŋoj Cases ;
+baŋ+N:baŋ Cases ;
+hüe+N:hüe^ODD Cases ;
+sɨr+N:sɨr Cases ;
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!                          L E X I C O N                                  !!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+LEXICON Cases
++Sg+Nom:0       # ; ! S1
++Sg+Acc:0       # ; ! S2
++Sg+Lat:%>NTƏC  # ; ! S1
++Sg+Loc:%>NTƏNU # ; ! S1
++Sg+Ela:%>KəCtə # ; ! S1
++Sg+Prl:%>mənU  # ; ! S1
++Sg+Com:%>na    # ; ! S2 ! << postp suffix cf. -nkaa
++Pl+Lat:%>NTIɁ  # ; ! S3?
++Pl+Nom:%>Ɂ     # ; ! S3?
++Du+Nom:%>Kəj   # ; ! S??
++Sg+Gen:%>ƏC     # ; ! S2
 
-LEXICON NounRoot
+LEXICON Verbs
 
-house RegNounInfl ; ! A noun
-
-LEXICON RegNounInfl
-
-%<n%>%<sg%>:   # ;
-%<n%>%<pl%>:s   # ;
-
-! Resources:
-! http://wiki.apertium.org/wiki/Starting_a_new_language_with_HFST#Lexicon
-! http://wiki.apertium.org/wiki/Lttoolbox_and_lexc
-! http://wiki.apertium.org/wiki/Apertium-specific_conventions_for_lexc
-! https://kitwiki.csc.fi/twiki/bin/view/KitWiki/HfstHome
-! http://hfst.sourceforge.net/
-! http://www.cis.upenn.edu/~cis639/docs/lexc.html
-! http://wiki.apertium.org/wiki/Hfst
+is’a+V:iXXX Persons ;
 

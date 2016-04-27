@@ -1,22 +1,30 @@
 Alphabet
- A B Ç D E Ä F G H I J Ž K L M N Ň O Ö P R S Ş T U Ü W Y Ý Z
- a b ç d e ä f g h i j ž k l m n ň o ö p r s ş t u ü w y ý z
- %{A%}:a %>:0  ;
+
+a b c d e f g h i j k l m n o p q r s t u v w x y z
+ɂ ń ɨ ŋ ə
+Ɂ:ɂ Ɂ:0
+H:h H:b
+T:t T:ð T:d
+K:k K:g
+N:n N:0 N:ŋ
+Ə:ə
+U:u U:ü
+I:i I:ɨ
+S:s S:sj
+C:0
+%^n:0
+%>:0
+%^ODD:0
+;
 
 Sets
+HARM = u ü i ɨ ;
+Cons = b c d f g h j k l m n ŋ r s t v w x z č ɂ ;
 
-Vowel = A E Ä I O Ö U Ü Y Ý 
-        a e ä i o ö u ü y ý ;
+Rules
+"N in weak grades RG"
+N:0 <=> [%^ODD: | :Cons] %>:0 _ [H: | T: | K: | S:] ;
 
-Rules 
-
-"Remove suffix vowel with vowel-ending stem"
-i:0 <=> Vow %{VSUF%}:0 _ [ m | n ] ;
-
-! Resources:
-! http://wiki.apertium.org/wiki/Starting_a_new_language_with_HFST#Enter_twol
-! https://kitwiki.csc.fi/twiki/bin/view/KitWiki/HfstHome
-! http://hfst.sourceforge.net/
-! http://wiki.apertium.org/wiki/Twol
-! http://wiki.apertium.org/wiki/Hfst
-
+"Vowel harmony simple"
+VH:VX => :VX \HARM* _ ; where VH in (U U I I) 
+                           VX in (u ü i ɨ) matched ;
