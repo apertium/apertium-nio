@@ -1,6 +1,6 @@
 AC_PREREQ(2.52)
 
-AC_INIT([Apertium {{languageName1}}-{{languageName2}}], [0.1.0], [tommi.antero.pirinen@uni-hamburg.de], [apertium-{{languageCode1}}-{{languageCode2}}], [http://wiki.apertium.org/wiki/Apertium-{{languageCode1}}-{{languageCode2}}])
+AC_INIT([apertium-nio], [0.0.0], [flammie@iki.fi], [apertium-nio], [http://wiki.apertium.org/wiki/Apertium-nio])
 AM_INIT_AUTOMAKE
 
 AC_PROG_LN_S
@@ -19,18 +19,45 @@ AS_IF([test x$hfstospell = xyes], [
           CXXFLAGS="$CXXFLAGS $HFSTOSPELL_CFLAGS"
         ])
 AM_CONDITIONAL([HAVE_HFSTOSPELL], [test x$hfstospell = xyes])
+AM_PATH_PYTHON([3.2],, [:])
 
 
 m4_define([required_apertium_version], [3.4.0])
 PKG_CHECK_MODULES(APERTIUM,   apertium >= required_apertium_version)
 
-AC_PATH_PROG([HFSTLEXC], [hfst-lexc], [false], [$PATH$PATH_SEPARATOR$with_hfst_lexc/bin])
+AC_PATH_PROG([HFSTLEXC], [hfst-lexc], [false])
 AS_IF([test x$HFSTLEXC = xfalse], [AC_MSG_ERROR([You don't have hfst-lexc installed])])
 
-AC_PATH_PROG([HFSTTWOLC], [hfst-twolc], [false], [$PATH$PATH_SEPARATOR$with_hfst_twolc/bin])
+AC_PATH_PROG([HFSTTWOLC], [hfst-twolc], [false])
 AS_IF([test x$HFSTTWOLC = xfalse], [AC_MSG_ERROR([You don't have hfst-twolc installed])])
 
-AC_PATH_PROG([CGCOMP], [cg-comp], [false], [$PATH$PATH_SEPARATOR$with_cg_comp/bin])
+AC_PATH_PROG([HFSTCOMPINT], [hfst-compose-intersect], [false])
+AS_IF([test x$HFSTCOMPINT = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTF2F], [hfst-fst2fst], [false])
+AS_IF([test x$HFSTF2F = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTT2F], [hfst-txt2fst], [false])
+AS_IF([test x$HFSTT2F = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTF2T], [hfst-fst2txt], [false])
+AS_IF([test x$HFSTF2T = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTMIN], [hfst-minimise], [false])
+AS_IF([test x$HFSTMIN = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTDIS], [hfst-disjunct], [false])
+AS_IF([test x$HFSTDIS = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTS2F], [hfst-strings2fst], [false])
+AS_IF([test x$HFSTS2F = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTR2F], [hfst-regexp2fst], [false])
+AS_IF([test x$HFSTR2F = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTINV], [hfst-invert], [false])
+AS_IF([test x$HFSTS2F = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTCAT], [hfst-concatenate], [false])
+AS_IF([test x$HFSTS2F = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+AC_PATH_PROG([HFSTPROJ], [hfst-project], [false])
+AS_IF([test x$HFSTPROJ = xfalse], [AC_MSG_ERROR([You don't have hfst])])
+
+
+AC_PATH_PROG([LTCOMP], [lt-comp], [false])
+AS_IF([test x$LTCOMP = xfalse], [AC_MSG_ERROR([You don't have lt-comp installed])])
+AC_PATH_PROG([CGCOMP], [cg-comp], [false])
 AS_IF([test x$CGCOMP = xfalse], [AC_MSG_ERROR([You don't have cg-comp installed])])
 
 
