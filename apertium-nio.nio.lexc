@@ -16,9 +16,12 @@ Multichar_Symbols
 
 LEXICON Root
 0 Nouns ;
+0 Verbs ;
 
 LEXICON Nouns
-kotu+N:koðu^ODD Cases ;
+kotu+N:ko ko/tu__n ;
+
+taa+N:taa Cases ;
 maɂ+N:maɁ Cases ;
 ńemɨ+N:ńemɨ^ODD Cases ;
 ŋanduj+N:ŋandujCases ;
@@ -29,20 +32,46 @@ baŋ+N:baŋ Cases ;
 hüe+N:hüe^ODD Cases ;
 sɨr+N:sɨr Cases ;
 
-LEXICON Cases
+LEXICON Verbs
+
+is’a+V:iXXX Persons ;
+
+
+LEXICON ko/tu__n
+:tu S1_Cases ; 
+:ðu^ODD S2_Cases ;
+
 +Sg+Nom:0       # ; ! S1
-+Sg+Acc:0       # ; ! S2
 +Sg+Lat:%>NTƏC  # ; ! S1
 +Sg+Loc:%>NTƏNU # ; ! S1
 +Sg+Ela:%>KəCtə # ; ! S1
 +Sg+Prl:%>mənU  # ; ! S1
+
+LEXICON S2_Cases
++Sg+Acc:0       # ; ! S2
 +Sg+Com:%>na    # ; ! S2 ! << postp suffix cf. -nkaa
+
+LEXICON S3_Cases
 +Pl+Lat:%>NTIɁ  # ; ! S3?
 +Pl+Nom:%>Ɂ     # ; ! S3?
 +Du+Nom:%>Kəj   # ; ! S??
 +Sg+Gen:%>ƏC     # ; ! S2
 
-LEXICON Verbs
+LEXICON Possessives_1
 
-is’a+V:iXXX Persons ;
++PxSg1:mə # ;
++PxDu1:gəjńə # ;
+
+LEXICON Possessives_2
+
++PxSg1:nə # ;
++PxPl1:ńə # ;
+
+
+!! Simbia ŋamabtusuðə           ńuəmtu           kolitəni
+!!        ŋəmə+CAUS+FUT+3SG     ńua+ACC+PX3SG    kolu+LOC
+!! Simbia syöttää               lapsensa         kalalla
+!!        syö+CAUS+NONPAST+3SG  lapsi+ACC+PX3SG  kala+ADE
+
+!! 
 
