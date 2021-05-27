@@ -1,6 +1,6 @@
 AC_PREREQ(2.52)
 
-AC_INIT([apertium-nio], [0.0.0], [flammie@iki.fi], [apertium-nio], [http://wiki.apertium.org/wiki/Apertium-nio])
+AC_INIT([apertium-nio], [0.0.0], [flammie@iki.fi], [apertium-nio], [https://wiki.apertium.org/wiki/Apertium-nio])
 AM_INIT_AUTOMAKE
 
 AC_PROG_LN_S
